@@ -16,8 +16,8 @@ android {
         minSdkVersion 21
         compileSdk 34
         targetSdk 34
-        versionCode 76
-        versionName "1.7.3"
+        versionCode 77
+        versionName "1.7.4"
 
         // only include full translations
         // NOTE: keep in sync with locales_config.xml
@@ -90,12 +90,12 @@ dependencies {
 // AndroidX
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.fragment:fragment:1.8.2'
+    implementation 'androidx.fragment:fragment:1.8.4'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.3.2'
-    implementation "androidx.navigation:navigation-fragment:2.7.7"
-    implementation "androidx.navigation:navigation-ui:2.7.7"
+    implementation "androidx.navigation:navigation-fragment:2.8.2"
+    implementation "androidx.navigation:navigation-ui:2.8.2"
 
 // Google
     implementation 'com.google.android.material:material:1.12.0'
