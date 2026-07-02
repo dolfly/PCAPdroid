@@ -178,12 +178,21 @@ public class DataViewContainerFragment extends Fragment implements MenuProvider 
         switchToView(targetView);
     }
 
+    public void resetToConnectionsView() {
+        switchToView(VIEW_CONNECTIONS);
+    }
+
     private void switchToView(int targetView) {
         if (mCurrentView == targetView) {
             return;
         }
 
         mCurrentView = targetView;
+
+        // The child fragments are only available once the view is created; otherwise
+        // onViewCreated() will honor the updated mCurrentView
+        if ((mConnectionsFragment == null) || (mHttpLogFragment == null))
+            return;
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
 

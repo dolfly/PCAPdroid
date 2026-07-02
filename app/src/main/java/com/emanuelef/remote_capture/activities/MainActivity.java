@@ -542,6 +542,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
+    private void resetDataView() {
+        Fragment container = getFragmentAtPos(POS_CONNECTIONS);
+        if (container instanceof DataViewContainerFragment) {
+            ((DataViewContainerFragment) container).resetToConnectionsView();
+        }
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         // This is required to properly handle the DPAD down press on Android TV, to properly
@@ -669,6 +676,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mState = AppState.running;
         notifyAppState();
         updateTabSwitchButton();
+        resetDataView();
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             checkVpnLockdownNotice();
