@@ -70,7 +70,6 @@
     <string name="last_seen">Ostatnio widziany</string>
     <string name="conn_status_closed">Zamknij</string>
     <string name="copy_to_clipboard">Kopiuj</string>
-    <string name="save_to_file">Zapisz do pliku</string>
     <string name="older_connections_notice">Nie pokazano %1$d starszych połączeń</string>
     <string name="about_text">PCAPdroid to narzędzie opensource do przechwytywania i monitorowania sieci, które działa bez uprawnień administratora</string>
     <string name="get_app">Pobierz:</string>

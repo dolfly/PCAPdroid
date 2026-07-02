@@ -65,7 +65,6 @@
     <string name="last_seen">Última vez</string>
     <string name="conn_status_closed">Cerrado</string>
     <string name="copy_to_clipboard">Copiar</string>
-    <string name="save_to_file">Guardar al archivo</string>
     <string name="older_connections_notice">%1$d conexiones antiguas no mostradas</string>
     <string name="about_text">PCAPdroid es una herramienta de captura y monitorización de red de código abierto que funciona sin privilegios root</string>
     <string name="get_app">Obténgalo:</string>

@@ -65,7 +65,6 @@
     <string name="last_seen">В последний раз обнаружено</string>
     <string name="conn_status_closed">Закрыто</string>
     <string name="copy_to_clipboard">Копировать</string>
-    <string name="save_to_file">Сохранить в файл</string>
     <string name="older_connections_notice">%1$d старых соединений не показано</string>
     <string name="about_text">PCAPdroid это свободный инструмент захвата и отслеживания сетевого трафика, который работает без привилегий суперпользователя</string>
     <string name="get_app">Получить его:</string>

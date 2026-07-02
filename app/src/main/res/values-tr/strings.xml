@@ -181,7 +181,6 @@
     <string name="apps">Uygulamalar</string>
     <string name="pcap_file">PCAP dosyası</string>
     <string name="delete">Sil</string>
-    <string name="save_to_file">Dosyaya kaydet</string>
     <string name="about_text">PCAPdroid, root ayrıcalıkları olmadan çalışan açık kaynaklı bir ağ yakalama ve izleme aracıdır</string>
     <string name="get_app">Edin:</string>
     <string name="error">Hata</string>

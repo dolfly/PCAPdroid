@@ -67,7 +67,6 @@
     <string name="conn_status_closed">مغلق</string>
     <string name="last_seen">آخر ظهور</string>
     <string name="copy_to_clipboard">نسخ</string>
-    <string name="save_to_file">حفظ إلى الملف</string>
     <string name="older_connections_notice">%1$d اتصالات قديمة غير معروضة</string>
     <string name="about_text">PCAPdroid هي أداة التقاط ومراقبة للشبكة مفتوحة المصدر تعمل بدون امتيازات الجذر</string>
     <string name="delete_error">لا يمكن حذف الملف</string>

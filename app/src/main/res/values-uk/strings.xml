@@ -271,7 +271,6 @@
     <string name="last_seen">Востаннє виявлено</string>
     <string name="conn_status_closed">Закрите</string>
     <string name="copy_to_clipboard">Копіювати</string>
-    <string name="save_to_file">Зберегти до файлу</string>
     <string name="older_connections_notice">%1$d застарілих з\'єднань не показано</string>
     <string name="about_text">PCAPdroid є інструментом з відкритим кодом для захоплення та моніторингу мережі який працює без рут прав</string>
     <string name="get_app">Отримати:</string>

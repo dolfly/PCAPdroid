@@ -126,7 +126,6 @@
     <string name="last_seen">Last seen</string>
     <string name="conn_status_closed">Closed</string>
     <string name="copy_to_clipboard">Copy</string>
-    <string name="save_to_file">Save to file</string>
     <string name="older_connections_notice">%1$d older connections not shown</string>
     <string name="about_text">PCAPdroid is an open source network capture and monitoring tool which works without root privileges</string>
     <string name="get_app">Get it:</string>
@@ -600,6 +599,7 @@
     <string name="next">Next</string>
     <string name="save_as_text">Save as text</string>
     <string name="save_as_har">Save as HAR</string>
+    <string name="save_as_csv">Save as CSV</string>
     <string name="last_capture">Last capture</string>
     <string name="view_all">View all</string>
     <string name="app_and_n_more">%1$s and %2$d more</string>

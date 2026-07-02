@@ -45,7 +45,6 @@
     <string name="last_seen">Fin</string>
     <string name="conn_status_closed">Terminée</string>
     <string name="copy_to_clipboard">Copier</string>
-    <string name="save_to_file">Enregistrer dans un fichier</string>
     <string name="older_connections_notice">%1$d anciennes connexions non affichées</string>
     <string name="error">Erreur</string>
     <string name="conn_status_unreachable">Injoignable</string>

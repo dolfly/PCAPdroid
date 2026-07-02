@@ -87,7 +87,6 @@
     <string name="netd_app_info">Der System-Daemon, der die DNS-Auflösungen durchführt</string>
     <string name="rcvd_and_sent">%1$s empfangen — %2$s gesendet</string>
     <string name="collector_info">UDP-Kollektor: %1$s:%2$d</string>
-    <string name="save_to_file">Speichern unter</string>
     <string name="older_connections_notice">%1$d ältere Verbindungen werden nicht angezeigt</string>
     <string name="unknown_app">Unbekannt</string>
     <string name="error">Fehler</string>

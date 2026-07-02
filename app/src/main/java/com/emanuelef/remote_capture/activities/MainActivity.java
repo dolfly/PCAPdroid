@@ -114,6 +114,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private CaptureHelper mCapHelper;
     private AlertDialog mPcapLoadDialog;
     private ExecutorService mPcapExecutor;
+    private MenuItem mMenuItemOpenPcap;
 
     // helps detecting duplicate state reporting of STOPPED in MutableLiveData
     private boolean mWasStarted = false;
@@ -656,6 +657,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void notifyAppState() {
         if(mListener != null)
             mListener.appStateChanged(mState);
+
+        refreshOpenPcapItem();
     }
 
     public void appStateReady() {
@@ -792,6 +795,21 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
         }
     }*/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
+
+        mMenuItemOpenPcap = menu.findItem(R.id.open_pcap);
+        refreshOpenPcapItem();
+        return true;
+    }
+
+    // opening a PCAP is only allowed while no capture is running
+    private void refreshOpenPcapItem() {
+        if(mMenuItemOpenPcap != null)
+            mMenuItemOpenPcap.setEnabled((mState == AppState.ready) || (mState == AppState.starting));
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

@@ -399,10 +399,8 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         CaptureService.observeStatus(this, serviceStatus -> {
             if(serviceStatus == CaptureService.ServiceStatus.STARTED) {
                 // register the new connection register
-                if(listenerSet) {
-                    unregisterConnsListener();
-                    registerConnsListener();
-                }
+                unregisterConnsListener();
+                registerConnsListener();
 
                 autoScroll = true;
                 showFabDown(false);
@@ -1146,8 +1144,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
 
         boolean is_enabled = (CaptureService.getConnsRegister() != null);
 
-        mMenuItemSearch.setVisible(is_enabled); // NOTE: setEnabled does not work for this
-        //mMenuFilter.setEnabled(is_enabled);
+        mMenuItemSearch.setEnabled(is_enabled);
         mSave.setEnabled(is_enabled);
     }
 

@@ -205,7 +205,6 @@
     <string name="delete">Hapus</string>
     <string name="capture_running">Capture berjalan</string>
     <string name="copy_to_clipboard">Salin ke papan klip</string>
-    <string name="save_to_file">Simpan ke file</string>
     <string name="unknown_app">Tidak diketahui</string>
     <string name="system_default">Bawaan sistem</string>
     <string name="conn_status_unreachable">Tidak terjangkau</string>

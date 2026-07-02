@@ -77,7 +77,6 @@
     <string name="last_seen">கடைசியாக பார்த்தேன்</string>
     <string name="conn_status_closed">மூடப்பட்டது</string>
     <string name="copy_to_clipboard">நகலெடு</string>
-    <string name="save_to_file">கோப்பில் சேமிக்கவும்</string>
     <string name="older_connections_notice">%1$d பழைய இணைப்புகள் காட்டப்படவில்லை</string>
     <string name="about_text">பி.சி.ஏ.பி டிராய்டு என்பது ஒரு திறந்த மூல பிணையம் பிடிப்பு மற்றும் கண்காணிப்பு கருவியாகும், இது ரூட் சலுகைகள் இல்லாமல் செயல்படுகிறது</string>
     <string name="get_app">அதைப் பெறுங்கள்:</string>

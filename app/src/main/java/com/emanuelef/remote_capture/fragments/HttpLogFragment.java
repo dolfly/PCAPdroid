@@ -618,7 +618,7 @@ public class HttpLogFragment extends Fragment implements HttpLog.Listener, MenuP
 
         boolean is_enabled = (CaptureService.getHttpLog() != null);
 
-        mMenuItemSearch.setVisible(is_enabled);
+        mMenuItemSearch.setEnabled(is_enabled);
         mSave.setEnabled(is_enabled);
         if(mSaveAsHar != null)
             mSaveAsHar.setEnabled(is_enabled);
