@@ -134,6 +134,9 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -1416,6 +1419,21 @@ public class Utils {
 
     public static boolean isPrintable(byte c) {
         return ((c >= 32) && (c <= 126)) || (c == '\r') || (c == '\n') || (c == '\t');
+    }
+
+    // Decode data as UTF-8, returning null if it contains invalid sequences. Unlike
+    // new String(data, UTF_8), this never silently replaces bytes with U+FFFD
+    @Nullable
+    public static String decodeUtf8Strict(byte[] data) {
+        CharsetDecoder decoder = StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT);
+
+        try {
+            return decoder.decode(ByteBuffer.wrap(data)).toString();
+        } catch (CharacterCodingException e) {
+            return null;
+        }
     }
 
     // Get a CharSequence which properly displays clickable links obtained by formatting a parametric
