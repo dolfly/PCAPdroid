@@ -254,17 +254,24 @@ public class HarWriter {
     }
 
     private void writeContent(JsonWriter writer, HttpLog.HttpReply reply, PayloadChunk respChunk) throws IOException {
+        byte[] body = null;
+        if ((respChunk != null) && (respChunk.payload != null))
+            body = extractBody(respChunk.payload);
+
         writer.beginObject();
-        writer.name("size").value(reply.bodyLength);
+
+        // "size" is the length of the stored body, which is decompressed, whereas bodyLength is
+        // the length on the wire. They differ when a content-encoding is applied
+        int size = (body != null) ? body.length : reply.bodyLength;
+        writer.name("size").value(size);
+        if (size > reply.bodyLength)
+            writer.name("compression").value(size - reply.bodyLength);
 
         String mimeType = reply.contentType != null ? reply.contentType : "application/octet-stream";
         writer.name("mimeType").value(mimeType);
 
-        if ((respChunk != null) && (respChunk.payload != null)) {
-            byte[] body = extractBody(respChunk.payload);
-            if ((body != null) && (body.length > 0))
-                writeBody(writer, body, reply.contentType);
-        }
+        if ((body != null) && (body.length > 0))
+            writeBody(writer, body, reply.contentType);
 
         writer.endObject();
     }

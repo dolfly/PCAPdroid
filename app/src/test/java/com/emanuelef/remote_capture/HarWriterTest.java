@@ -956,10 +956,84 @@ public class HarWriterTest {
         // the content should be plain text (not base64 encoded)
         assertFalse("decompressed text content should NOT have encoding field", content.has("encoding"));
 
+        // "size" must be the length of the decompressed body, whereas bodySize is the length on the wire
+        assertEquals(originalJs.getBytes(StandardCharsets.UTF_8).length, content.get("size").getAsInt());
+        assertEquals(gzippedBody.length, response.get("bodySize").getAsInt());
+
         // Verify the actual content is the original JavaScript (decompressed)
         assertTrue("content should have text field", content.has("text"));
         String textContent = content.get("text").getAsString();
         assertEquals("content should match original JavaScript", originalJs, textContent);
+    }
+
+    @Test
+    public void testGzipCompressionSavings() throws IOException {
+        ConnectionDescriptor conn = createConnection(16, "10.0.0.12", 80);
+        conn.info = "gzip.example.com";
+        conn.l7proto = "HTTP";
+
+        String httpRequest = "GET /big.js HTTP/1.1\r\n" +
+                "Host: gzip.example.com\r\n" +
+                "\r\n";
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 200; i++)
+            sb.append("function hello() { console.log('Hello, World!'); }\n");
+        String originalJs = sb.toString();
+
+        ByteArrayOutputStream gzipOut = new ByteArrayOutputStream();
+        try (GZIPOutputStream gzos = new GZIPOutputStream(gzipOut)) {
+            gzos.write(originalJs.getBytes(StandardCharsets.UTF_8));
+        }
+        byte[] gzippedBody = gzipOut.toByteArray();
+
+        String httpResponseHeaders = "HTTP/1.1 200 OK\r\n" +
+                "Content-Type: application/javascript\r\n" +
+                "Content-Encoding: gzip\r\n" +
+                "Content-Length: " + gzippedBody.length + "\r\n" +
+                "\r\n";
+        byte[] headerBytes = httpResponseHeaders.getBytes(StandardCharsets.UTF_8);
+        byte[] fullResponse = new byte[headerBytes.length + gzippedBody.length];
+        System.arraycopy(headerBytes, 0, fullResponse, 0, headerBytes.length);
+        System.arraycopy(gzippedBody, 0, fullResponse, headerBytes.length, gzippedBody.length);
+
+        long reqTimestamp = System.currentTimeMillis();
+        long respTimestamp = reqTimestamp + 50;
+
+        addChunkDirect(conn, createHttpChunk(httpRequest, true, reqTimestamp));
+        addChunkDirect(conn, new PayloadChunk(fullResponse, PayloadChunk.ChunkType.HTTP, false, respTimestamp, 0));
+
+        HttpLog.HttpRequest httpReq = new HttpLog.HttpRequest(conn, 0);
+        httpReq.method = "GET";
+        httpReq.host = "gzip.example.com";
+        httpReq.path = "/big.js";
+        httpReq.query = "";
+        httpReq.timestamp = reqTimestamp;
+        httpReq.bodyLength = 0;
+
+        HttpLog.HttpReply httpReply = new HttpLog.HttpReply(httpReq, 1);
+        httpReply.responseCode = 200;
+        httpReply.responseStatus = "OK";
+        httpReply.contentType = "application/javascript";
+        httpReply.bodyLength = gzippedBody.length;
+        httpReq.reply = httpReply;
+
+        httpLog.addHttpRequest(httpReq);
+        httpLog.addHttpReply(httpReply);
+
+        String harJson = writeHarToString();
+        JsonObject har = parseHar(harJson);
+        JsonObject entry = har.getAsJsonObject("log").getAsJsonArray("entries").get(0).getAsJsonObject();
+        JsonObject response = entry.getAsJsonObject("response");
+        JsonObject content = response.getAsJsonObject("content");
+
+        int decompressedSize = originalJs.getBytes(StandardCharsets.UTF_8).length;
+        assertTrue("the test data must actually shrink when compressed", gzippedBody.length < decompressedSize);
+
+        assertEquals(originalJs, content.get("text").getAsString());
+        assertEquals(decompressedSize, content.get("size").getAsInt());
+        assertEquals(gzippedBody.length, response.get("bodySize").getAsInt());
+        assertEquals(decompressedSize - gzippedBody.length, content.get("compression").getAsInt());
     }
 
     @Test
