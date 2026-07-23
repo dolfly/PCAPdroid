@@ -425,7 +425,7 @@ void pd_init_pkt_context(pkt_context_t *pctx,
 void pd_process_packet(pcapdroid_t *pd, pkt_context_t *pctx);
 void pd_account_stats(pcapdroid_t *pd, pkt_context_t *pctx);
 void pd_dump_packet(pcapdroid_t *pd, const char *pktbuf, int pktlen, const struct timeval *tv,
-                       int uid, u_int ifidx);
+                       int uid, u_int ifidx, bool is_tx);
 void pd_housekeeping(pcapdroid_t *pd);
 pd_conn_t* pd_new_connection(pcapdroid_t *pd, const zdtun_5tuple_t *tuple, int uid);
 void pd_purge_connection(pcapdroid_t *pd, pd_conn_t *data);

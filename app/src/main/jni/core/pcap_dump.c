@@ -531,7 +531,7 @@ static bool dump_pcapng_interface(pcap_dumper_t *dumper, u_int ifidx) {
 }
 
 static bool dump_packet_pcapng(pcap_dumper_t *dumper, const char *pkt, int pktlen,
-                                      const struct timeval *tv, int uid, u_int ifidx) {
+                                      const struct timeval *tv, int uid, u_int ifidx, bool is_tx) {
     u_int pcapng_ifid = 0;
 
     if(ifidx > 0) {
@@ -568,6 +568,12 @@ static bool dump_packet_pcapng(pcap_dumper_t *dumper, const char *pkt, int pktle
     uint8_t padding = (~incl_len + 1) & 0x3; // packet data must be padded to 32 bits
     int total_length = epb_size + incl_len + padding;
 
+    // EPB flags option (root mode only, to store the direction heuristic result)
+    // Don't dump it in vpn mode to save space
+    bool dump_direction = !dumper->pd->vpn_capture;
+    if(dump_direction)
+        total_length += sizeof(pcapng_enh_option_t) + 4;
+
     char comment[32];
     int comment_len = 0;
     uint8_t comment_padding = 0;
@@ -599,6 +605,18 @@ static bool dump_packet_pcapng(pcap_dumper_t *dumper, const char *pkt, int pktle
     for(uint8_t i=0; i<padding; i++)
         *(buffer++) = 0x00;
 
+    if(dump_direction) {
+        // EPB flags option: its low 2 bits are the standard direction field
+        // (01 = inbound, 10 = outbound)
+        pcapng_enh_option_t *flags_opt = (pcapng_enh_option_t *) buffer;
+        flags_opt->code = 0x0002;
+        flags_opt->length = 4;
+        buffer += sizeof(pcapng_enh_option_t);
+
+        *(uint32_t*)buffer = is_tx ? 0x2 : 0x1;
+        buffer += 4;
+    }
+
     if (has_comment) {
         // specify the UID as a comment
         // this is necessary until custom options are supported by Wireshark
@@ -622,10 +640,10 @@ static bool dump_packet_pcapng(pcap_dumper_t *dumper, const char *pkt, int pktle
 /* Dump a single packet into the buffer. Returns false if PCAP dump must be stopped (e.g. if max
  * dump size reached or an error occurred). */
 bool pcap_dump_packet(pcap_dumper_t *dumper, const char *pkt, int pktlen,
-                      const struct timeval *tv, int uid, u_int ifidx) {
+                      const struct timeval *tv, int uid, u_int ifidx, bool is_tx) {
     bool rv;
     if (dumper->format == PCAPNG_DUMP)
-        rv = dump_packet_pcapng(dumper, pkt, pktlen, tv, uid, ifidx);
+        rv = dump_packet_pcapng(dumper, pkt, pktlen, tv, uid, ifidx, is_tx);
     else
         rv = dump_packet_pcap(dumper, pkt, pktlen, tv, uid);
 
