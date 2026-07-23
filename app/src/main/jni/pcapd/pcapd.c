@@ -669,7 +669,7 @@ static int handle_nl_message(pcapd_runtime_t *rt) {
         }
         break;
       case RTM_DELLINK:
-        if((iface = iface_by_ifidx(rt, ((struct ifaddrmsg *) NLMSG_DATA(nh))->ifa_index)) != NULL) {
+        if((iface = iface_by_ifidx(rt, ((struct ifinfomsg *) NLMSG_DATA(nh))->ifi_index)) != NULL) {
           // libpcap sometimes does not detect that an interface was removed. Making it necessary
           // to subscribe to RTMGRP_LINK
           log_i("RTM_DELLINK: interface %s deleted", iface->name);
