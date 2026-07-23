@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PCAPdroid.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2023-25 - Emanuele Faranda
+ * Copyright 2023-26 - Emanuele Faranda
  */
 
 #include <linux/if_ether.h>
@@ -257,6 +257,13 @@ static int write_pcapng_opt(char *buf, pcapng_opt_t *opt) {
     return opt->tot_length;
 }
 
+static int write_pcapng_opt_end(void *buf) {
+    pcapng_enh_option_t *opt = (pcapng_enh_option_t*) buf;
+    opt->code = 0;
+    opt->length = 0;
+    return sizeof(*opt);
+}
+
 /* ******************************************************* */
 
 static int get_pcap_file_header(pcap_dumper_t *dumper, char **out) {
@@ -282,7 +289,8 @@ static int get_pcapng_preamble(pcap_dumper_t *dumper, char **out) {
     pcapng_opt_t shb_app = pcapng_option(0x4, pd_appver, strlen(pd_appver));
 
     int shb_length = sizeof(pcapng_section_hdr_block_t) + shb_hw.tot_length +
-            shb_os.tot_length + shb_app.tot_length + 4 /* total_length */;
+            shb_os.tot_length + shb_app.tot_length +
+            sizeof(pcapng_enh_option_t) /* opt_endofopt */ + 4 /* total_length */;
     int idb_length = sizeof(pcapng_intf_descr_block_t) + 4 /* total_length */;
     int preamble_sz = shb_length + idb_length;
     char *preamble = (char*) pd_malloc(preamble_sz);
@@ -302,6 +310,7 @@ static int get_pcapng_preamble(pcap_dumper_t *dumper, char **out) {
     ptr += write_pcapng_opt(ptr, &shb_hw);
     ptr += write_pcapng_opt(ptr, &shb_os);
     ptr += write_pcapng_opt(ptr, &shb_app);
+    ptr += write_pcapng_opt_end(ptr);
     *(uint32_t*)ptr = shb->total_length;
     ptr += 4;
 
@@ -499,6 +508,7 @@ static bool dump_pcapng_interface(pcap_dumper_t *dumper, u_int ifidx) {
         total_length += sizeof(pcapng_enh_option_t) + strlen(ifname);
         ifname_padding = (~total_length + 1) & 0x3;
         total_length += ifname_padding;
+        total_length += sizeof(pcapng_enh_option_t); // opt_endofopt
     }
 
     int8_t *buffer = alloc_dump_buffer(dumper, total_length);
@@ -524,6 +534,8 @@ static bool dump_pcapng_interface(pcap_dumper_t *dumper, u_int ifidx) {
 
         for(uint8_t i=0; i<ifname_padding; i++)
             *(buffer++) = 0x00;
+
+        buffer += write_pcapng_opt_end(buffer);
     }
 
     *(uint32_t*)buffer = idb->total_length;
@@ -586,6 +598,10 @@ static bool dump_packet_pcapng(pcap_dumper_t *dumper, const char *pkt, int pktle
         has_comment = true;
     }
 
+    bool has_options = dump_direction || has_comment;
+    if(has_options)
+        total_length += sizeof(pcapng_enh_option_t); // opt_endofopt
+
     uint64_t now_usec = (uint64_t)tv->tv_sec * 1000000 + tv->tv_usec;
     int8_t *buffer = alloc_dump_buffer(dumper, total_length);
 
@@ -632,6 +648,9 @@ static bool dump_packet_pcapng(pcap_dumper_t *dumper, const char *pkt, int pktle
         for(uint8_t i=0; i<comment_padding; i++)
             *(buffer++) = 0x00;
     }
+
+    if(has_options)
+        buffer += write_pcapng_opt_end(buffer);
 
     *(uint32_t*)buffer = epb->total_length;
     return true;
