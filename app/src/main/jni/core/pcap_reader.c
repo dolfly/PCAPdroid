@@ -156,6 +156,7 @@ void pd_destroy_reader(pd_reader_t *reader) {
 
     mapped_uid_t *entry, *tmp;
     HASH_ITER(hh, reader->mapped_uids, entry, tmp) {
+        HASH_DEL(reader->mapped_uids, entry);
         pd_free(entry);
     }
 

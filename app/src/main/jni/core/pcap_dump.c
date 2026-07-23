@@ -204,6 +204,7 @@ void pcap_destroy_dumper(pcap_dumper_t *dumper) {
     {
         mapped_uid_t *entry, *tmp;
         HASH_ITER(hh, dumper->mapped_uids, entry, tmp) {
+            HASH_DEL(dumper->mapped_uids, entry);
             pd_free(entry);
         }
     }
@@ -211,6 +212,7 @@ void pcap_destroy_dumper(pcap_dumper_t *dumper) {
     {
         dumped_interface_t *entry, *tmp;
         HASH_ITER(hh, dumper->dumped_interfaces, entry, tmp) {
+            HASH_DEL(dumper->dumped_interfaces, entry);
             pd_free(entry);
         }
     }

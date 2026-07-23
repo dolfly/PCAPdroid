@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with PCAPdroid.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2022 - Emanuele Faranda
+ * Copyright 2022-26 - Emanuele Faranda
  */
 
 #include "test_utils.h"
@@ -152,7 +152,10 @@ static void roundtrip_dump_cb(struct pcapdroid *pd, const int8_t *buf, int len) 
 
 /* Tests that the packet direction survives a Pcapng dump + reload. The direction
  * is carried by the EPB flags option: without it the reader would default every
- * reloaded packet to TX, losing the direction set by the capture heuristic. */
+ * reloaded packet to TX, losing the direction set by the capture heuristic.
+ *
+ * dump_extensions is enabled to increase coverage.
+ */
 static void direction_roundtrip() {
   pcapdroid_t *pd = pd_init_test(PCAP_PATH "/metadata.pcap");
 
@@ -161,7 +164,7 @@ static void direction_roundtrip() {
   pkt[0] = 0x45; // version 4, IHL 5
   struct timeval tv = { .tv_sec = 1234, .tv_usec = 567 };
 
-  pcap_dumper_t *dumper = pcap_new_dumper(PCAPNG_DUMP, false, PCAPD_SNAPLEN,
+  pcap_dumper_t *dumper = pcap_new_dumper(PCAPNG_DUMP, true, PCAPD_SNAPLEN,
                                           0, roundtrip_dump_cb, pd);
   assert(dumper != NULL);
 
